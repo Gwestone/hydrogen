@@ -22,7 +22,7 @@ link_libraries(${GLUT_LIBRARIES})
 #TODO fix glad loading, by converting glad to cmake project submodule
 include_directories(${PROJECT_SOURCE_DIR}/libs/glad/include)
 # Add your source files
-add_executable(hydrogen src/main.cpp ${PROJECT_SOURCE_DIR}/libs/glad/src/glad.c src/Shader.cpp src/Shader.h)
+add_executable(hydrogen src/main.cpp ${PROJECT_SOURCE_DIR}/libs/glad/src/glad.c src/Shader.cpp src/Shader.h src/BuffersArray_AOS.cpp src/BuffersArray_AOS.h)
 
 # Link GLFW and other libraries if needed
 target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
