@@ -1,3 +1,4 @@
+#include <memory>
 #include "TextureArray.h"
 #include "glad/glad.h"
 
@@ -9,7 +10,7 @@ TextureArray::~TextureArray() {
 
 }
 
-void TextureArray::addTexture(Texture* texture) {
+void TextureArray::addTexture(const std::shared_ptr<Texture>& texture) {
     textures.push_back(texture);
 }
 
@@ -20,9 +21,9 @@ void TextureArray::bindAllTextures() {
     }
 }
 
-void TextureArray::useTextures(const Shader &shader) {
-    shader.use();
+void TextureArray::useTextures(Shader* shader) {
+    shader->use();
     for (int i = 0; i < textures.size(); ++i) {
-        shader.setInt(textures[i]->getName(), i);
+        shader->setInt(textures[i]->getName(), i);
     }
 }

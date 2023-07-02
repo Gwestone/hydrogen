@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <memory>
 #include "Shader.h"
 #include "BuffersArray_AOS.h"
 
@@ -13,7 +14,7 @@
 #include "TextureArray.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
+void processInput(const std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)>& window);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -29,14 +30,16 @@ int main(){
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+//    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)> window(glfwCreateWindow(800, 600, "My Window", nullptr, nullptr), glfwDestroyWindow);
+
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
     }
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwMakeContextCurrent(window.get());
+    glfwSetFramebufferSizeCallback(window.get(), framebuffer_size_callback);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -50,7 +53,7 @@ int main(){
     // build and compile our shader program
     // ------------------------------------
     // vertex shader
-    Shader shader("shader.vert", "shader.frag");
+    auto shader = std::make_unique<Shader>("shader.vert", "shader.frag");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -62,7 +65,7 @@ int main(){
     };
 
     float colors[] = {
-            1.0f, 0.0f, 0.0f,  // top right
+            1.0f, 1.0f, 0.0f,  // top right
             0.0f, 1.0f, 0.0f,  // bottom right
             1.0f, 0.0f, 0.0f,  // bottom left
             0.0f, 0.0f, 1.0f   // top left
@@ -81,15 +84,15 @@ int main(){
     };
 
     //load and process texture data
-    auto* tex1 = new Texture("ourTexture", "container.jpg", GL_RGB);
-    auto* tex2 = new Texture("faceTexture", "awesomeface.png", GL_RGBA);
+    auto tex1 = std::make_shared<Texture>("ourTexture", "container.jpg", GL_RGB);
+    auto tex2  = std::make_shared<Texture>("faceTexture", "awesomeface.png", GL_RGBA);
     //end of texture data
 
-    auto* texArray = new TextureArray();
+    auto texArray = std::make_unique<TextureArray>();
     texArray->addTexture(tex1);
     texArray->addTexture(tex2);
 
-    auto* bufferArray = new BuffersArray_AOS();
+    auto bufferArray = std::make_unique<BuffersArray_AOS>();
 
     unsigned int vertex_buffer = bufferArray->createBuffer();
     bufferArray->writeBuffer(0, vertex_buffer, vertices, sizeof(vertices), 3);
@@ -108,11 +111,11 @@ int main(){
     // uncomment this call to draw in wireframe polygons.
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    texArray->useTextures(shader);
+    texArray->useTextures(shader.get());
 
     // render loop
     // -----------
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window.get()))
     {
         // input
         // -----
@@ -125,7 +128,7 @@ int main(){
 //        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
         // draw our first triangle
-        shader.use();
+        shader->use();
 
         texArray->bindAllTextures();
         bufferArray->bind(); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
@@ -135,13 +138,13 @@ int main(){
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(window.get());
         glfwPollEvents();
     }
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    delete bufferArray;
+    bufferArray.reset();
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
@@ -151,10 +154,10 @@ int main(){
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
+void processInput(const std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)>& window)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window.get(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window.get(), true);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

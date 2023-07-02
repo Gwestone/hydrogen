@@ -9,6 +9,6 @@ uniform sampler2D ourTexture;
 uniform sampler2D faceTexture;
 
 void main() {
-    out_Color = mix(texture(ourTexture, TexCoord), texture(faceTexture, TexCoord), 0.2);
+    out_Color = vec4(Vert_Out_Frag_In, 1.0) * mix(texture(ourTexture, TexCoord), texture(faceTexture, TexCoord), 0.2);
 //        out_Color = texture(faceTexture, TexCoord);
 }

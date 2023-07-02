@@ -12,11 +12,11 @@ public:
 
     TextureArray();
     ~TextureArray();
-    void addTexture(Texture* texture);
+    void addTexture(const std::shared_ptr<Texture>& texture);
     void bindAllTextures();
-    void useTextures(const Shader& shader);
+    void useTextures(Shader* shader);
 private:
-    std::vector<Texture*> textures;
+    std::vector<std::shared_ptr<Texture>> textures;
 };
 
 #endif //HYDROGEN_TEXTUREARRAY_H
