@@ -9,6 +9,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "Texture.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -42,6 +43,8 @@ int main(){
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    stbi_set_flip_vertically_on_load(true);
 
     // build and compile our shader program
     // ------------------------------------
@@ -105,27 +108,8 @@ int main(){
 
 
     //load and process texture data
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load and generate the texture
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("assets/textures/container.jpg", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
+    auto* tex1 = new Texture("container.jpg", GL_RGB);
+    auto* tex2 = new Texture("awesomeface.png", GL_RGBA);
     //end of texture data
 
 
@@ -143,10 +127,14 @@ int main(){
     bufferArray->createElementBuffer();
     bufferArray->writeElementBuffer(indices, sizeof(indices));
 
-    bufferArray->unbind();
+//    bufferArray->unbind();
 
     // uncomment this call to draw in wireframe polygons.
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    shader.use();
+    shader.setInt("ourTexture", 0);
+    shader.setInt("faceTexture", 1);
 
     // render loop
     // -----------
@@ -164,7 +152,12 @@ int main(){
 
         // draw our first triangle
         shader.use();
-        glBindTexture(GL_TEXTURE_2D, texture);
+
+        glActiveTexture(GL_TEXTURE0);
+        tex1->bindTexture();
+        glActiveTexture(GL_TEXTURE1);
+        tex2->bindTexture();
+
         bufferArray->bind(); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
