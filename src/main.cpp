@@ -7,6 +7,9 @@
 #include "Shader.h"
 #include "BuffersArray_AOS.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
@@ -39,6 +42,11 @@ int main(){
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("assets/textures/container.jpg", &width, &height, &nrChannels, 0);
+
+    std::cout << *data;
 
     // build and compile our shader program
     // ------------------------------------

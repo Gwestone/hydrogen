@@ -23,11 +23,12 @@ link_libraries(${GLUT_LIBRARIES})
 # Add your source files
 add_executable(hydrogen src/main.cpp src/Shader.cpp src/Shader.h src/BuffersArray_AOS.cpp src/BuffersArray_AOS.h)
 
-# including glad in project
+# including glad, stb libs in project
 add_subdirectory(libs/glad/)
+add_subdirectory(libs/stb/)
 
 # Link GLFW and other libraries if needed
-target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} glad)
+target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} glad stb)
 
 #post build processes
 #build assets folder
