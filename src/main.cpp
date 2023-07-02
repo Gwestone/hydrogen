@@ -10,6 +10,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "Texture.h"
+#include "TextureArray.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -80,10 +81,13 @@ int main(){
     };
 
     //load and process texture data
-    auto* tex1 = new Texture("container.jpg", GL_RGB);
-    auto* tex2 = new Texture("awesomeface.png", GL_RGBA);
+    auto* tex1 = new Texture("ourTexture", "container.jpg", GL_RGB);
+    auto* tex2 = new Texture("faceTexture", "awesomeface.png", GL_RGBA);
     //end of texture data
 
+    auto* texArray = new TextureArray();
+    texArray->addTexture(tex1);
+    texArray->addTexture(tex2);
 
     auto* bufferArray = new BuffersArray_AOS();
 
@@ -104,9 +108,7 @@ int main(){
     // uncomment this call to draw in wireframe polygons.
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    shader.use();
-    shader.setInt("ourTexture", 0);
-    shader.setInt("faceTexture", 1);
+    texArray->useTextures(shader);
 
     // render loop
     // -----------
@@ -125,11 +127,7 @@ int main(){
         // draw our first triangle
         shader.use();
 
-        glActiveTexture(GL_TEXTURE0);
-        tex1->bindTexture();
-        glActiveTexture(GL_TEXTURE1);
-        tex2->bindTexture();
-
+        texArray->bindAllTextures();
         bufferArray->bind(); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -140,8 +138,6 @@ int main(){
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
-
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------

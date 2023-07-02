@@ -7,6 +7,9 @@
 class BuffersArray_AOS {
 private:
 public:
+    BuffersArray_AOS (const BuffersArray_AOS&) = delete;
+    BuffersArray_AOS& operator= (const BuffersArray_AOS&) = delete;
+
     BuffersArray_AOS();
     ~BuffersArray_AOS();
     unsigned int createBuffer();

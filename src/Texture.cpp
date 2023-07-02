@@ -3,11 +3,11 @@
 #include "glad/glad.h"
 #include "stb_image.h"
 
-Texture::Texture(const std::string &name, unsigned int sourceImageFormat) {
-    loadTexture(name, sourceImageFormat);
+Texture::Texture(const std::string& name, const std::string& fileName, unsigned int sourceImageFormat) {
+    loadTexture(name, fileName, sourceImageFormat);
 }
 
-void Texture::loadTexture(const std::string &name, unsigned int sourceImageFormat) {
+void Texture::loadTexture(const std::string& _name, const std::string& fileName, unsigned int sourceImageFormat) {
     //load and process texture data
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
@@ -18,9 +18,10 @@ void Texture::loadTexture(const std::string &name, unsigned int sourceImageForma
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     // load and generate the texture
     int _width, _height, _nrChannels;
-    unsigned char *data = stbi_load(std::string("assets/textures/" + name).c_str(), &_width, &_height, &_nrChannels, 0);
+    unsigned char *data = stbi_load(std::string("assets/textures/" + fileName).c_str(), &_width, &_height, &_nrChannels, 0);
     if (data)
     {
+        name = _name;
         width = _width;
         height = _height;
         nrChannels = _nrChannels;
@@ -36,5 +37,9 @@ void Texture::loadTexture(const std::string &name, unsigned int sourceImageForma
 
 void Texture::bindTexture() {
     glBindTexture(GL_TEXTURE_2D, textureID);
+}
+
+std::string Texture::getName() {
+    return name;
 }
 

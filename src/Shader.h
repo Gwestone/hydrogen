@@ -10,6 +10,9 @@ private:
     static unsigned int compileShader(unsigned int shaderFlag, const char *shaderSource);
     void linkProgram() const;
 public:
+    Shader (const Shader&) = delete;
+    Shader& operator= (const Shader&) = delete;
+
     Shader(const std::string& vertName, const std::string& fragName);
     void use() const;
     void setBool(const std::string &name, bool value) const;
