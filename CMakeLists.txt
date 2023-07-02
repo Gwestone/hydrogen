@@ -20,6 +20,7 @@ add_executable(hydrogen src/main.cpp src/Shader.cpp src/Shader.h src/BuffersArra
 # including glad, stb libs in project
 add_subdirectory(libs/glad/)
 add_subdirectory(libs/stb/)
+add_subdirectory(libs/glm/)
 
 # Link GLFW and other libraries if needed
 target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} glad stb)
