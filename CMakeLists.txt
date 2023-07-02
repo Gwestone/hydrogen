@@ -14,12 +14,6 @@ find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 link_libraries(${OPENGL_LIBRARIES})
 
-# find and link GLUT
-find_package(GLUT REQUIRED)
-include_directories(${GLUT_INCLUDE_DIRS})
-link_libraries(${GLUT_LIBRARIES})
-
-#include_directories(${PROJECT_SOURCE_DIR}/libs/glad/include)
 # Add your source files
 add_executable(hydrogen src/main.cpp src/Shader.cpp src/Shader.h src/BuffersArray_AOS.cpp src/BuffersArray_AOS.h src/Texture.cpp src/Texture.h src/TextureArray.cpp src/TextureArray.h)
 
@@ -28,7 +22,7 @@ add_subdirectory(libs/glad/)
 add_subdirectory(libs/stb/)
 
 # Link GLFW and other libraries if needed
-target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} glad stb)
+target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} glad stb)
 
 #post build processes
 #build assets folder
