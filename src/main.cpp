@@ -53,9 +53,24 @@ int main(){
             -0.5f, -0.5f, 0.0f,  // bottom left
             -0.5f,  0.5f, 0.0f   // top left
     };
+
+    float colors[] = {
+            1.0f, 0.0f, 0.0f,  // top right
+            0.0f, 1.0f, 0.0f,  // bottom right
+            1.0f, 0.0f, 0.0f,  // bottom left
+            0.0f, 0.0f, 1.0f   // top left
+    };
+
     unsigned int indices[] = {  // note that we start from 0!
             0, 1, 3,  // first Triangle
             1, 2, 3   // second Triangle
+    };
+
+    float uvCoords[] = {
+            1.0f, 1.0f,   // top right
+            1.0f, 0.0f,  // bottom right
+            0.0f, 0.0f,  // bottom left
+            0.0f, 1.0f   // top left
     };
 //    unsigned int VBO, VAO, EBO;
 //    glGenVertexArrays(1, &VAO);
@@ -85,15 +100,18 @@ int main(){
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
 //    glBindVertexArray(0);
 
-    BuffersArray_AOS bufferArray;
+    auto* bufferArray = new BuffersArray_AOS();
 
-    unsigned int first_buffer = bufferArray.createBuffer();
-    bufferArray.writeBuffer(0, first_buffer, vertices, sizeof(vertices), 3);
+    unsigned int vertex_buffer = bufferArray->createBuffer();
+    bufferArray->writeBuffer(0, vertex_buffer, vertices, sizeof(vertices), 3);
 
-    bufferArray.createElementBuffer();
-    bufferArray.writeElementBuffer(indices, sizeof(indices));
+    unsigned int color_buffer = bufferArray->createBuffer();
+    bufferArray->writeBuffer(1, color_buffer, colors, sizeof(colors), 3);
 
-    bufferArray.unbind();
+    bufferArray->createElementBuffer();
+    bufferArray->writeElementBuffer(indices, sizeof(indices));
+
+    bufferArray->unbind();
 
     // uncomment this call to draw in wireframe polygons.
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -114,7 +132,7 @@ int main(){
 
         // draw our first triangle
         shader.use();
-        bufferArray.bind(); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+        bufferArray->bind(); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         // glBindVertexArray(0); // no need to unbind it every time
@@ -124,6 +142,8 @@ int main(){
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    delete bufferArray;
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------

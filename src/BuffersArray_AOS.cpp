@@ -5,6 +5,16 @@ BuffersArray_AOS::BuffersArray_AOS() {
     glGenVertexArrays(1, &ID);
 }
 
+
+BuffersArray_AOS::~BuffersArray_AOS() {
+    glDeleteVertexArrays(1, &ID);
+    for (auto a : buffers) {
+        glDeleteBuffers(1, &a);
+    }
+    glDeleteBuffers(1, &indicesBuffer);
+}
+
+
 void BuffersArray_AOS::createElementBuffer() {
     glGenBuffers(1, &indicesBuffer);
 }
@@ -43,4 +53,3 @@ void BuffersArray_AOS::bind() const {
 void BuffersArray_AOS::unbind() const {
     glBindVertexArray(0);
 }
-

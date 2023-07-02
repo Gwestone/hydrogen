@@ -8,6 +8,7 @@ class BuffersArray_AOS {
 private:
 public:
     BuffersArray_AOS();
+    ~BuffersArray_AOS();
     unsigned int createBuffer();
     void writeBuffer(unsigned int location, unsigned int bufferIndex, const void* data, long dataSize, int bufferSize);
     void createElementBuffer();
