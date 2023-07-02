@@ -23,7 +23,7 @@ add_subdirectory(libs/stb/)
 add_subdirectory(libs/glm/)
 
 # Link GLFW and other libraries if needed
-target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} glad stb)
+target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} glad stb glm)
 
 #post build processes
 #build assets folder

@@ -3,6 +3,7 @@
 
 #include "Texture.h"
 #include "Shader.h"
+#include <memory>
 
 class TextureArray {
 private:

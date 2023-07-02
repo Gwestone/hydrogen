@@ -1,8 +1,10 @@
 #ifndef HYDROGEN_SHADER_H
 #define HYDROGEN_SHADER_H
 
-
 #include <string>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Shader {
 private:
@@ -18,6 +20,7 @@ public:
     void setBool(const std::string &name, bool value) const;
     void setInt(const std::string &name, int value) const;
     void setFloat(const std::string &name, float value) const;
+    void setMatrix4x4(const std::string &name, glm::mat4 trans) const;
 private:
     unsigned int vertexShader;
     unsigned int fragmentShader;
