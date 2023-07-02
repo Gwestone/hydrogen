@@ -46,8 +46,6 @@ int main(){
     int width, height, nrChannels;
     unsigned char *data = stbi_load("assets/textures/container.jpg", &width, &height, &nrChannels, 0);
 
-    std::cout << *data;
-
     // build and compile our shader program
     // ------------------------------------
     // vertex shader
