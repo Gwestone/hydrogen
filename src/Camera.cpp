@@ -1,17 +1,19 @@
 #include "Camera.h"
 
-Camera::Camera(const glm::vec3 &_cameraPos, const glm::vec3 &_cameraFront, float fov, float scr_width,
+Camera::Camera(const glm::vec3 &_cameraPos, const glm::vec3 &_cameraFront, float _fov, float scr_width,
                float scr_height) {
-    updateCamera(cameraPos, cameraFront, fov, scr_width, scr_height);
+    updateCamera(_cameraPos, _cameraFront, _fov, scr_width, scr_height);
 }
 
-void Camera::updateCamera(const glm::vec3 &_cameraPos, const glm::vec3 &_cameraFront, float fov, float scr_width,
+void Camera::updateCamera(const glm::vec3 &_cameraPos, const glm::vec3 &_cameraFront, float _fov, float scr_width,
                           float scr_height) {
     cameraPos = _cameraPos;
     cameraFront = _cameraFront;
+    fov = _fov;
 
     view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-    projection = glm::perspective(glm::radians(fov), ((float)scr_width / (float)scr_height), 0.1f, 100.0f);
+
+    projection = glm::perspective(glm::radians(_fov), ((float)scr_width / (float)scr_height), 0.1f, 100.0f);
 }
 
 

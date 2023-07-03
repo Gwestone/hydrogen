@@ -12,6 +12,7 @@
 #include "Shader.h"
 #include "BuffersArray_AOS.h"
 #include "Camera.h"
+#include "Timer.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -35,16 +36,17 @@ float lastX =  800.0f / 2.0;
 float lastY =  600.0 / 2.0;
 float fov   =  45.0f;
 
-// timing
-float deltaTime = 0.0f;	// time between current frame and last frame
-float lastFrame = 0.0f;
-
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+//timer
+auto timer = std::make_unique<Timer>();
+
+//speed
+const float speed = 5.0f;
+
 bool rightButtonPressed = false;
-bool leftButtonPressed = false;
 
 int main(){
     // glfw: initialize and configure
@@ -56,7 +58,6 @@ int main(){
 
     // glfw window creation
     // --------------------
-//    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
     std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)> window(glfwCreateWindow(800, 600, "My Window", nullptr, nullptr), glfwDestroyWindow);
 
     if (window == NULL) {
@@ -83,7 +84,6 @@ int main(){
 
     // build and compile our shader program
     // ------------------------------------
-    // vertex shader
     auto shader = std::make_unique<Shader>("shader.vert", "shader.frag");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
@@ -103,23 +103,18 @@ int main(){
             // note that we start from 0!
             2, 6, 7,
             2, 3, 7,
-
             //Bottom
             0, 4, 5,
             0, 1, 5,
-
             //Left
             0, 2, 6,
             0, 4, 6,
-
             //Right
             1, 3, 7,
             1, 5, 7,
-
             //Front
             0, 2, 3,
             0, 1, 3,
-
             //Back
             4, 6, 7,
             4, 5, 7
@@ -168,12 +163,10 @@ int main(){
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window.get())) {
+
         //per-frame time logic
         // -----
-
-        float currentFrame = static_cast<float>(glfwGetTime());
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+        timer->calcTime();
 
         // input
         // -----
@@ -181,11 +174,7 @@ int main(){
 
         //update
         // -----
-//        model = glm::rotate(model, (float)glm::sin(glfwGetTime()) * glm::radians(1.0f), glm::vec3(0.5f, 1.0f, 0.0f));
         glm::mat4 model = glm::mat4(1.0f);
-
-        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        glm::mat4 projection = glm::perspective(glm::radians(fov), ((float)SCR_WIDTH / (float)SCR_HEIGHT), 0.1f, 100.0f);
 
         camera->updateCamera(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
 
@@ -195,7 +184,6 @@ int main(){
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//        glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
         // draw our first triangle
         shader->use();
@@ -203,10 +191,7 @@ int main(){
 
         texArray->bindAllTextures();
         bufferArray->bind(); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-        // glBindVertexArray(0); // no need to unbind it every time
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -226,12 +211,11 @@ int main(){
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(const std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)>& window)
-{
+void processInput(const std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)>& window) {
     if (glfwGetKey(window.get(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window.get(), true);
 
-    auto cameraSpeed = static_cast<float>(2.5 * deltaTime);
+    auto cameraSpeed = static_cast<float>(speed * timer->getFrameTime());
     if (glfwGetKey(window.get(), GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += (cameraSpeed * cameraFront);
     if (glfwGetKey(window.get(), GLFW_KEY_S) == GLFW_PRESS)
@@ -240,6 +224,10 @@ void processInput(const std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)>& windo
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     if (glfwGetKey(window.get(), GLFW_KEY_D) == GLFW_PRESS)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window.get(), GLFW_KEY_SPACE) == GLFW_PRESS)
+        cameraPos += glm::normalize(cameraUp) * cameraSpeed;
+    if (glfwGetKey(window.get(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        cameraPos -= glm::normalize(cameraUp) * cameraSpeed;
 
 }
 
@@ -248,18 +236,12 @@ void onMouseButton(GLFWwindow* window, int button, int action, int mods) {
         rightButtonPressed = true;
         return;
     }
-    else if( button == GLFW_MOUSE_BUTTON_LEFT ) {
-        leftButtonPressed = true;
-        return;
-    }
     rightButtonPressed = false;
-    leftButtonPressed = false;
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
@@ -267,8 +249,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
-{
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
     if (rightButtonPressed){
         float xpos = static_cast<float>(xposIn);
         float ypos = static_cast<float>(yposIn);
@@ -308,8 +289,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     fov -= (float)yoffset;
     if (fov < 1.0f)
         fov = 1.0f;

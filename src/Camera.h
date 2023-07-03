@@ -8,11 +8,12 @@
 class Camera {
 private:
 public:
-    Camera(const glm::vec3 &_cameraPos, const glm::vec3 &_cameraFront, float fov, float scr_width,
+    Camera(const glm::vec3 &_cameraPos, const glm::vec3 &_cameraFront, float _fov, float scr_width,
            float scr_height);
-    void updateCamera(const glm::vec3& _cameraPos, const glm::vec3& _cameraFront, float fov, float scr_width, float scr_height);
+    void updateCamera(const glm::vec3& _cameraPos, const glm::vec3& _cameraFront, float _fov, float scr_width, float scr_height);
     glm::mat4 getCameraMatrix();
 private:
+    float fov;
     glm::vec3 cameraPos;
     glm::vec3 cameraFront;
     glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
