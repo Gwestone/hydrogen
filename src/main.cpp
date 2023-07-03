@@ -11,6 +11,7 @@
 
 #include "Shader.h"
 #include "BuffersArray_AOS.h"
+#include "Camera.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -20,6 +21,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(const std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)>& window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void onMouseButton( GLFWwindow* window, int button, int action, int mods );
 
 // camera
 glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 5.0f);
@@ -40,6 +42,9 @@ float lastFrame = 0.0f;
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+
+bool rightButtonPressed = false;
+bool leftButtonPressed = false;
 
 int main(){
     // glfw: initialize and configure
@@ -63,6 +68,7 @@ int main(){
     glfwSetFramebufferSizeCallback(window.get(), framebuffer_size_callback);
     glfwSetCursorPosCallback(window.get(), mouse_callback);
     glfwSetScrollCallback(window.get(), scroll_callback);
+    glfwSetMouseButtonCallback(window.get(), onMouseButton);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -152,6 +158,8 @@ int main(){
 
     bufferArray->unbind();
 
+    auto camera = std::make_unique<Camera>(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
+
     // uncomment this call to draw in wireframe polygons.
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -175,12 +183,13 @@ int main(){
         // -----
 //        model = glm::rotate(model, (float)glm::sin(glfwGetTime()) * glm::radians(1.0f), glm::vec3(0.5f, 1.0f, 0.0f));
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(1.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glm::mat4 projection = glm::perspective(glm::radians(fov), ((float)SCR_WIDTH / (float)SCR_HEIGHT), 0.1f, 100.0f);
 
-        glm::mat4 trans = projection * view * model;
+        camera->updateCamera(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
+
+        glm::mat4 trans = camera->getCameraMatrix() * model;
 
         // render
         // ------
@@ -234,6 +243,19 @@ void processInput(const std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)>& windo
 
 }
 
+void onMouseButton(GLFWwindow* window, int button, int action, int mods) {
+    if( button == GLFW_MOUSE_BUTTON_RIGHT ) {
+        rightButtonPressed = true;
+        return;
+    }
+    else if( button == GLFW_MOUSE_BUTTON_LEFT ) {
+        leftButtonPressed = true;
+        return;
+    }
+    rightButtonPressed = false;
+    leftButtonPressed = false;
+}
+
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -247,39 +269,41 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
+    if (rightButtonPressed){
+        float xpos = static_cast<float>(xposIn);
+        float ypos = static_cast<float>(yposIn);
 
-    if (firstMouse)
-    {
+        if (firstMouse)
+        {
+            lastX = xpos;
+            lastY = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
         lastX = xpos;
         lastY = ypos;
-        firstMouse = false;
+
+        float sensitivity = 0.1f; // change this value to your liking
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
+
+        yaw += xoffset;
+        pitch += yoffset;
+
+        // make sure that when pitch is out of bounds, screen doesn't get flipped
+        if (pitch > 89.0f)
+            pitch = 89.0f;
+        if (pitch < -89.0f)
+            pitch = -89.0f;
+
+        glm::vec3 front;
+        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front.y = sin(glm::radians(pitch));
+        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        cameraFront = glm::normalize(front);
     }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-    lastX = xpos;
-    lastY = ypos;
-
-    float sensitivity = 0.1f; // change this value to your liking
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    yaw += xoffset;
-    pitch += yoffset;
-
-    // make sure that when pitch is out of bounds, screen doesn't get flipped
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
-
-    glm::vec3 front;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(front);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
