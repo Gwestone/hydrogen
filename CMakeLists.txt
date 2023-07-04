@@ -21,9 +21,10 @@ add_executable(hydrogen src/main.cpp src/Shader.cpp src/Shader.h src/BuffersArra
 add_subdirectory(libs/glad/)
 add_subdirectory(libs/stb/)
 add_subdirectory(libs/glm/)
+add_subdirectory(libs/assimp/)
 
 # Link GLFW and other libraries if needed
-target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} glad stb glm)
+target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} glad stb glm assimp)
 
 #post build processes
 #build assets folder

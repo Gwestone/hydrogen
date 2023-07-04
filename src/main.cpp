@@ -16,10 +16,7 @@
 #include "Mesh.h"
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(const std::unique_ptr<Window>& window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -129,18 +126,18 @@ int main(){
     texArray->addTexture(tex1);
     texArray->addTexture(tex2);
 
-    auto bufferArray = std::make_unique<BuffersArray_AOS>();
+    auto buffersArray = std::make_unique<BuffersArray_AOS>();
 
-    unsigned int vertex_buffer = bufferArray->createBuffer();
-    bufferArray->writeBuffer(0, vertex_buffer, mesh->getRawVertices(), mesh->getVerticesSize(), 3);
+    unsigned int vertex_buffer = buffersArray->createBuffer();
+    buffersArray->writeBuffer(0, vertex_buffer, mesh->getRawVertices(), mesh->getVerticesSize(), 3);
 
-    unsigned int uv_buffer = bufferArray->createBuffer();
-    bufferArray->writeBuffer(1, uv_buffer, mesh->getRawUV(), mesh->getUVSize(), 2);
+    unsigned int uv_buffer = buffersArray->createBuffer();
+    buffersArray->writeBuffer(1, uv_buffer, mesh->getRawUV(), mesh->getUVSize(), 2);
 
-    bufferArray->createElementBuffer();
-    bufferArray->writeElementBuffer(mesh->getRawIndices(), mesh->getIndicesSize());
+    buffersArray->createElementBuffer();
+    buffersArray->writeElementBuffer(mesh->getRawIndices(), mesh->getIndicesSize());
 
-    bufferArray->unbind();
+    buffersArray->unbind();
 
     auto camera = std::make_unique<Camera>(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
 
@@ -179,7 +176,7 @@ int main(){
         shader->setMatrix4x4("transform", trans);
 
         texArray->bindAllTextures();
-        bufferArray->bind(); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+        buffersArray->bind(); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -190,7 +187,7 @@ int main(){
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    bufferArray.reset();
+    buffersArray.reset();
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
