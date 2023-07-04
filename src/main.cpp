@@ -6,20 +6,20 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include <fstream>
 #include <memory>
 
 #include "Shader.h"
 #include "BuffersArray_AOS.h"
 #include "Camera.h"
 #include "Timer.h"
+#include "Window.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(const std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)>& window);
+void processInput(const std::unique_ptr<Window>& window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void onMouseButton( GLFWwindow* window, int button, int action, int mods );
@@ -49,27 +49,13 @@ const float speed = 5.0f;
 bool rightButtonPressed = false;
 
 int main(){
-    // glfw: initialize and configure
-    // ------------------------------
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // glfw window creation
+    // window creation
     // --------------------
-    std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)> window(glfwCreateWindow(800, 600, "My Window", nullptr, nullptr), glfwDestroyWindow);
+    std::unique_ptr<Window> window = std::make_unique<Window>(800, 600, "My window");
 
-    if (window == NULL) {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window.get());
-    glfwSetFramebufferSizeCallback(window.get(), framebuffer_size_callback);
-    glfwSetCursorPosCallback(window.get(), mouse_callback);
-    glfwSetScrollCallback(window.get(), scroll_callback);
-    glfwSetMouseButtonCallback(window.get(), onMouseButton);
+    window->setCursorPosCallback(mouse_callback);
+    window->setScrollCallback(scroll_callback);
+    window->setMouseButtonCallback(onMouseButton);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -162,7 +148,7 @@ int main(){
 
     // render loop
     // -----------
-    while (!glfwWindowShouldClose(window.get())) {
+    while (!glfwWindowShouldClose(window->get())) {
 
         //per-frame time logic
         // -----
@@ -195,7 +181,7 @@ int main(){
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window.get());
+        glfwSwapBuffers(window->get());
         glfwPollEvents();
     }
 
@@ -211,22 +197,22 @@ int main(){
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(const std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)>& window) {
-    if (glfwGetKey(window.get(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window.get(), true);
+void processInput(const std::unique_ptr<Window>& window) {
+    if (glfwGetKey(window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window->get(), true);
 
     auto cameraSpeed = static_cast<float>(speed * timer->getFrameTime());
-    if (glfwGetKey(window.get(), GLFW_KEY_W) == GLFW_PRESS)
+    if (glfwGetKey(window->get(), GLFW_KEY_W) == GLFW_PRESS)
         cameraPos += (cameraSpeed * cameraFront);
-    if (glfwGetKey(window.get(), GLFW_KEY_S) == GLFW_PRESS)
+    if (glfwGetKey(window->get(), GLFW_KEY_S) == GLFW_PRESS)
         cameraPos -= (cameraSpeed * cameraFront);
-    if (glfwGetKey(window.get(), GLFW_KEY_A) == GLFW_PRESS)
+    if (glfwGetKey(window->get(), GLFW_KEY_A) == GLFW_PRESS)
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window.get(), GLFW_KEY_D) == GLFW_PRESS)
+    if (glfwGetKey(window->get(), GLFW_KEY_D) == GLFW_PRESS)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window.get(), GLFW_KEY_SPACE) == GLFW_PRESS)
+    if (glfwGetKey(window->get(), GLFW_KEY_SPACE) == GLFW_PRESS)
         cameraPos += glm::normalize(cameraUp) * cameraSpeed;
-    if (glfwGetKey(window.get(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    if (glfwGetKey(window->get(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
         cameraPos -= glm::normalize(cameraUp) * cameraSpeed;
 
 }
