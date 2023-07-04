@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "Timer.h"
 #include "Window.h"
+#include "Mesh.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -74,7 +75,7 @@ int main(){
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    float vertices[] = {
+    std::vector<float> vertices = {
             -1.0, -1.0, 1.0, //0
             1.0, -1.0, 1.0, //1
             -1.0, 1.0, 1.0, //2
@@ -85,7 +86,7 @@ int main(){
             1.0, 1.0, -1.0  //7
     };
 
-    unsigned int indices[] = {
+    std::vector<unsigned int> indices = {
             // note that we start from 0!
             2, 6, 7,
             2, 3, 7,
@@ -106,7 +107,7 @@ int main(){
             4, 5, 7
     };
 
-    float uvCoords[] = {
+    std::vector<float> uvCoords = {
             0.0f, 0.0f,   // top right
             1.0f, 0.0f,  // bottom right
             1.0f, 0.0f,  // bottom left
@@ -116,6 +117,8 @@ int main(){
             1.0f, 0.0f,
             0.0f, 1.0f,
     };
+
+    std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>(vertices, indices, uvCoords);
 
     //load and process texture data
     auto tex1 = std::make_shared<Texture>("ourTexture", "container.jpg", GL_RGB);
@@ -129,13 +132,13 @@ int main(){
     auto bufferArray = std::make_unique<BuffersArray_AOS>();
 
     unsigned int vertex_buffer = bufferArray->createBuffer();
-    bufferArray->writeBuffer(0, vertex_buffer, vertices, sizeof(vertices), 3);
+    bufferArray->writeBuffer(0, vertex_buffer, mesh->getRawVertices(), mesh->getVerticesSize(), 3);
 
     unsigned int uv_buffer = bufferArray->createBuffer();
-    bufferArray->writeBuffer(1, uv_buffer, uvCoords, sizeof(uvCoords), 2);
+    bufferArray->writeBuffer(1, uv_buffer, mesh->getRawUV(), mesh->getUVSize(), 2);
 
     bufferArray->createElementBuffer();
-    bufferArray->writeElementBuffer(indices, sizeof(indices));
+    bufferArray->writeElementBuffer(mesh->getRawIndices(), mesh->getIndicesSize());
 
     bufferArray->unbind();
 
