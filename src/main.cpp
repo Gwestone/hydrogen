@@ -14,6 +14,7 @@
 #include "Timer.h"
 #include "Window.h"
 #include "Mesh.h"
+#include "Model.h"
 
 #include <glm/glm.hpp>
 
@@ -68,7 +69,7 @@ int main(){
 
     // build and compile our shader program
     // ------------------------------------
-    auto shader = std::make_unique<Shader>("shader.vert", "shader.frag");
+    auto shader = std::make_shared<Shader>("shader.vert", "shader.frag");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -122,29 +123,20 @@ int main(){
     auto tex2  = std::make_shared<Texture>("faceTexture", "awesomeface.png", GL_RGBA);
     //end of texture data
 
-    auto texArray = std::make_unique<TextureArray>();
-    texArray->addTexture(tex1);
-    texArray->addTexture(tex2);
-
-    auto buffersArray = std::make_unique<BuffersArray_AOS>();
-
-    unsigned int vertex_buffer = buffersArray->createBuffer();
-    buffersArray->writeBuffer(0, vertex_buffer, mesh->getRawVertices(), mesh->getVerticesSize(), 3);
-
-    unsigned int uv_buffer = buffersArray->createBuffer();
-    buffersArray->writeBuffer(1, uv_buffer, mesh->getRawUV(), mesh->getUVSize(), 2);
-
-    buffersArray->createElementBuffer();
-    buffersArray->writeElementBuffer(mesh->getRawIndices(), mesh->getIndicesSize());
-
-    buffersArray->unbind();
-
-    auto camera = std::make_unique<Camera>(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
+    auto camera = std::make_shared<Camera>(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
 
     // uncomment this call to draw in wireframe polygons.
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    texArray->useTextures(shader.get());
+    auto object = std::make_unique<Model>(shader);
+    object->loadMesh(std::move(mesh));
+    object->writeBuffers();
+
+    object->loadTexture(tex1);
+    object->loadTexture(tex2);
+
+//    texArray->useTextures(shader.get());
+    object->prepareTextures();
 
     // render loop
     // -----------
@@ -160,11 +152,8 @@ int main(){
 
         //update
         // -----
-        glm::mat4 model = glm::mat4(1.0f);
 
         camera->updateCamera(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
-
-        glm::mat4 trans = camera->getCameraMatrix() * model;
 
         // render
         // ------
@@ -172,12 +161,7 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // draw our first triangle
-        shader->use();
-        shader->setMatrix4x4("transform", trans);
-
-        texArray->bindAllTextures();
-        buffersArray->bind(); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        object->Draw(camera);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -187,7 +171,7 @@ int main(){
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    buffersArray.reset();
+//    buffersArray.reset();
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------

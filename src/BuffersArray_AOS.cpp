@@ -20,12 +20,12 @@ void BuffersArray_AOS::createElementBuffer() {
 }
 
 void BuffersArray_AOS::writeElementBuffer(const void *data, long dataSize) const {
-    glBindVertexArray(ID);
+    bind();
     //prepare and write indices buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW);
 
-    glBindVertexArray(0);
+    unbind();
 }
 
 unsigned int BuffersArray_AOS::createBuffer() {
@@ -36,14 +36,14 @@ unsigned int BuffersArray_AOS::createBuffer() {
 
 //TODO optimize buffer to efficiently load non texture data
 void BuffersArray_AOS::writeBuffer(unsigned int location, unsigned int bufferIndex, const void* data, long dataSize, int bufferSize) {
-    glBindVertexArray(ID);
+    bind();
 
     glBindBuffer(GL_ARRAY_BUFFER, buffers[bufferIndex]);
     glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW);
     glVertexAttribPointer(location, bufferSize, GL_FLOAT, GL_FALSE, bufferSize * sizeof(float), (void*)0);
     glEnableVertexAttribArray(location);
 
-    glBindVertexArray(0);
+    unbind();
 }
 
 void BuffersArray_AOS::bind() const {
