@@ -19,6 +19,9 @@ private:
     unsigned int textureID;
     unsigned int width, height, nrChannels;
     std::string name;
+public:
+    std::string type;
+    std::string path;
 };
 
 

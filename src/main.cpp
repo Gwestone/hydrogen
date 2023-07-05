@@ -1,9 +1,8 @@
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-#include "Texture.h"
-#include "TextureArray.h"
+#include <stb_image.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 #include <iostream>
 #include <memory>
@@ -15,8 +14,8 @@
 #include "Window.h"
 #include "Mesh.h"
 #include "Model.h"
-
-#include <glm/glm.hpp>
+#include "Texture.h"
+#include "ModelLoader.h"
 
 void processInput(const std::unique_ptr<Window>& window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -71,72 +70,13 @@ int main(){
     // ------------------------------------
     auto shader = std::make_shared<Shader>("shader.vert", "shader.frag");
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-    std::vector<float> vertices = {
-            -1.0, -1.0, 1.0, //0
-            1.0, -1.0, 1.0, //1
-            -1.0, 1.0, 1.0, //2
-            1.0, 1.0, 1.0, //3
-            -1.0, -1.0, -1.0, //4
-            1.0, -1.0, -1.0, //5
-            -1.0, 1.0, -1.0, //6
-            1.0, 1.0, -1.0  //7
-    };
-
-    std::vector<unsigned int> indices = {
-            // note that we start from 0!
-            2, 6, 7,
-            2, 3, 7,
-            //Bottom
-            0, 4, 5,
-            0, 1, 5,
-            //Left
-            0, 2, 6,
-            0, 4, 6,
-            //Right
-            1, 3, 7,
-            1, 5, 7,
-            //Front
-            0, 2, 3,
-            0, 1, 3,
-            //Back
-            4, 6, 7,
-            4, 5, 7
-    };
-
-    std::vector<float> uvCoords = {
-            0.0f, 0.0f,   // top right
-            1.0f, 0.0f,  // bottom right
-            1.0f, 0.0f,  // bottom left
-            1.0f, 1.0f,   // top left
-            0.0f, 1.0f,
-            0.0f, 0.0f,
-            1.0f, 0.0f,
-            0.0f, 1.0f,
-    };
-
-    std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>(vertices, indices, uvCoords);
-
-    //load and process texture data
-    auto tex1 = std::make_shared<Texture>("ourTexture", "container.jpg", GL_RGB);
-    auto tex2  = std::make_shared<Texture>("faceTexture", "awesomeface.png", GL_RGBA);
-    //end of texture data
-
     auto camera = std::make_shared<Camera>(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
 
     // uncomment this call to draw in wireframe polygons.
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    auto object = std::make_unique<Model>(shader);
-    object->loadMesh(std::move(mesh));
-    object->writeBuffers();
-
-    object->loadTexture(tex1);
-    object->loadTexture(tex2);
-
-//    texArray->useTextures(shader.get());
-    object->prepareTextures();
+    ModelLoader modelLoader;
+    auto models = modelLoader.loadFile("backpack/backpack.obj", shader);
 
     // render loop
     // -----------
@@ -152,7 +92,6 @@ int main(){
 
         //update
         // -----
-
         camera->updateCamera(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
 
         // render
@@ -160,8 +99,12 @@ int main(){
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        for (auto& model : models) {
+            model->Draw(camera);
+        }
+
         // draw our first triangle
-        object->Draw(camera);
+//        object->Draw(camera);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
