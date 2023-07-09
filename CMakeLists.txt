@@ -25,7 +25,7 @@ add_subdirectory(libs/assimp/)
 add_subdirectory(libs/spdlog/)
 
 # Link GLFW and other libraries if needed
-target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} glad stb glm assimp)
+target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} glad stb glm assimp spdlog)
 
 #post build processes
 #build assets folder
