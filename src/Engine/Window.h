@@ -19,6 +19,9 @@ namespace Engine{
         void setCursorPosCallback(GLFWcursorposfun callback);
         void setMouseButtonCallback(GLFWmousebuttonfun callback);
         void setUserPointer(WindowData *data);
+
+        void hideCursor();
+
     private:
         GLFWwindow* window;
         int width, height;

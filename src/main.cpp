@@ -2,8 +2,8 @@
 
 int main(){
 
-    MyApp app;
-    app.runLoop();
+    auto* app = new MyApp();
+    app->runLoop();
 
     return 0;
 }

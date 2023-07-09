@@ -68,4 +68,8 @@ namespace Engine{
     void Window::setMouseButtonCallback(GLFWmousebuttonfun callback) {
         glfwSetMouseButtonCallback(window, callback);
     }
+
+    void Window::hideCursor() {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    }
 }

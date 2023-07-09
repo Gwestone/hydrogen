@@ -14,6 +14,7 @@ namespace Engine{
         window->setCursorPosCallback(mouse_callback);
         window->setScrollCallback(scroll_callback);
         window->setMouseButtonCallback(onMouseButton);
+//        window->hideCursor();
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             std::cout << "Failed to initialize GLAD" << std::endl;
@@ -103,6 +104,7 @@ namespace Engine{
 
         auto* data = (WindowData*)glfwGetWindowUserPointer( window );
 
+        //TODO make real hold detection system
         if (data->rightButtonPressed){
             float xpos = static_cast<float>(xposIn);
             float ypos = static_cast<float>(yposIn);
@@ -137,6 +139,9 @@ namespace Engine{
             front.y = sin(glm::radians(data->pitch));
             front.z = sin(glm::radians(data->yaw)) * cos(glm::radians(data->pitch));
             data->cameraFront = glm::normalize(front);
+        } else{
+            data->lastX = static_cast<float>(xposIn);
+            data->lastY = static_cast<float>(yposIn);
         }
     }
 
