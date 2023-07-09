@@ -15,7 +15,7 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 link_libraries(${OPENGL_LIBRARIES})
 
 # Add your source files
-add_executable(hydrogen src/main.cpp src/Shader.cpp src/Shader.h src/BuffersArray_AOS.cpp src/BuffersArray_AOS.h src/Texture.cpp src/Texture.h src/TextureArray.cpp src/TextureArray.h src/Camera.cpp src/Camera.h src/Timer.cpp src/Timer.h src/App.cpp src/App.h src/Window.cpp src/Window.h src/Mesh.cpp src/Mesh.h src/Model.cpp src/Model.h src/Vertex.h)
+add_executable(hydrogen src/main.cpp src/Engine/Shader.cpp src/Engine/Shader.h src/Engine/BuffersArray_AOS.cpp src/Engine/BuffersArray_AOS.h src/Engine/Texture.cpp src/Engine/Texture.h src/Engine/TextureArray.cpp src/Engine/TextureArray.h src/Engine/Camera.cpp src/Engine/Camera.h src/Engine/Timer.cpp src/Engine/Timer.h src/Engine/App.cpp src/Engine/App.h src/Engine/Window.cpp src/Engine/Window.h src/Engine/Mesh.cpp src/Engine/Mesh.h src/Engine/Model.cpp src/Engine/Model.h src/Engine/Vertex.h src/Engine/WindowData.h src/MyApp.cpp src/MyApp.h)
 
 # including glad, stb libs in project
 add_subdirectory(libs/glad/)
