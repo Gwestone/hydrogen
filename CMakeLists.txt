@@ -22,6 +22,7 @@ add_subdirectory(libs/glad/)
 add_subdirectory(libs/stb/)
 add_subdirectory(libs/glm/)
 add_subdirectory(libs/assimp/)
+add_subdirectory(libs/spdlog/)
 
 # Link GLFW and other libraries if needed
 target_link_libraries(hydrogen glfw ${OPENGL_LIBRARIES} glad stb glm assimp)
