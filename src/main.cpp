@@ -8,14 +8,10 @@
 #include <memory>
 
 #include "Shader.h"
-#include "BuffersArray_AOS.h"
 #include "Camera.h"
 #include "Timer.h"
 #include "Window.h"
-#include "Mesh.h"
 #include "Model.h"
-#include "Texture.h"
-#include "ModelLoader.h"
 
 void processInput(const std::unique_ptr<Window>& window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -68,15 +64,17 @@ int main(){
 
     // build and compile our shader program
     // ------------------------------------
-    auto shader = std::make_shared<Shader>("shader.vert", "shader.frag");
+    Shader shader("shader.vert", "shader.frag");
 
-    auto camera = std::make_shared<Camera>(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
+    Camera camera(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
 
     // uncomment this call to draw in wireframe polygons.
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    ModelLoader modelLoader;
-    auto models = modelLoader.loadFile("backpack/backpack.obj", shader);
+//    ModelLoader modelLoader;
+//    auto models = modelLoader.loadFile("backpack/backpack.obj", shader);
+
+    Model model("assets/models/backpack/backpack.obj");
 
     // render loop
     // -----------
@@ -92,16 +90,16 @@ int main(){
 
         //update
         // -----
-        camera->updateCamera(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
+        camera.updateCamera(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
 
         // render
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        for (auto& model : models) {
-            model->Draw(camera);
-        }
+        shader.use();
+        shader.setMatrix4x4("TRANSFORM_IN", camera.getCameraMatrix());
+        model.Draw(shader);
 
         // draw our first triangle
 //        object->Draw(camera);

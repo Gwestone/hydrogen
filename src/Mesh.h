@@ -3,29 +3,28 @@
 
 
 #include <vector>
+#include <memory>
+#include "Vertex.h"
+#include "BuffersArray_AOS.h"
+#include "TextureArray.h"
 
 struct Mesh {
 private:
+    void writeGPUBuffers();
 public:
-    Mesh(const std::vector<float>& _vertices, const std::vector<unsigned int>& _indices, const std::vector<float>& _uv);
+    Mesh(const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices, const std::vector<Texture> &_textures);
     ~Mesh();
-    void setVertices(const std::vector<float>& _vertices);
-    void setIndices(const std::vector<unsigned int>& _indices);
-    void setUV(const std::vector<float>& _uv);
 
-    float* getRawVertices();
-    unsigned int getVerticesSize();
-
-    unsigned int* getRawIndices();
-    unsigned int getIndicesSize();
-
-    float* getRawUV();
-    unsigned int getUVSize();
+    void Draw(const Shader &shader);
 
 private:
-    std::vector<float> vertices;
+    std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<float> uv;
+    TextureArray texManager;
+    //TODO write implementation of vertex arrays management class
+    //std::unique_ptr<BuffersArray_AOS> bufferArray;
+
+    unsigned int VAO, VBO, EBO;
 };
 
 

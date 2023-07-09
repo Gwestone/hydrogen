@@ -8,16 +8,14 @@
 class TextureArray {
 private:
 public:
-    TextureArray (const TextureArray&) = delete;
-    TextureArray& operator= (const TextureArray&) = delete;
 
     TextureArray();
     ~TextureArray();
-    void addTexture(const std::shared_ptr<Texture>& texture);
+    void addTexture(const Texture& texture);
     void bindAllTextures();
-    void useTextures(Shader* shader);
+    void useTextures(const Shader &shader);
 private:
-    std::vector<std::shared_ptr<Texture>> textures;
+    std::vector<Texture> textures;
 };
 
 #endif //HYDROGEN_TEXTUREARRAY_H

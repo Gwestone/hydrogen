@@ -13,30 +13,28 @@
 #include "Camera.h"
 #include "glad/glad.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 class Model {
 private:
 
-    glm::mat4 getModelMatrix();
+    void processNode(aiNode *node, const aiScene *scene);
+    Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+    std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string& typeName);
 
 public:
-    Model(const std::shared_ptr<Shader>& _shader);
-    void Draw(const std::shared_ptr<Camera>& _camera);
-    void writeBuffers();
-
-    void loadMesh(std::unique_ptr<Mesh> _mesh);
-    void loadTexture(const std::shared_ptr<Texture>& _texture);
-
-    void prepareTextures();
+    Model(const std::string& path);
+    ~Model();
+    void Draw(const Shader &shader);
+    void loadModel(const std::string& path);
 private:
-    // model data
-    std::unique_ptr<Mesh> mesh;
-    std::unique_ptr<BuffersArray_AOS> vertexBuffers;
-    std::unique_ptr<TextureArray> texArray;
-    std::shared_ptr<Shader> shader;
 
-    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    // model data
+    std::vector<Mesh> meshes;
+    std::string directory;
+    std::vector<Texture> textures_loaded;
 
 };
 

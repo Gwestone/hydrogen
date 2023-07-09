@@ -4,15 +4,16 @@
 
 #include <vector>
 #include <string>
+#include "glad/glad.h"
 
 class Texture {
 private:
+    static GLenum getFormat(unsigned int nrComponents);
 public:
-    Texture (const Texture&) = delete;
-    Texture& operator= (const Texture&) = delete;
+    Texture(const std::string &name, const std::string &fileName);
+    ~Texture();
 
-    Texture(const std::string& name, const std::string &fileName, unsigned int sourceImageFormat);
-    void loadTexture(const std::string& _name, const std::string &fileName, unsigned int sourceImageFormat);
+    void loadTexture(const std::string &_name, const std::string &fileName);
     void bindTexture();
     std::string getName();
 private:

@@ -1,13 +1,16 @@
 #version 450 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 uv;
+layout (location = 0) in vec3 POS_IN;
+layout (location = 1) in vec3 NORMAL_IN;
+layout (location = 2) in vec2 UV_IN;
 
-out vec2 TexCoord;
+out vec3 POS_VERT_OUT_FRAG_IN;
+out vec2 UV_VERT_OUT_FRAG_IN;
 
-uniform mat4 transform;
+uniform mat4 TRANSFORM_IN;
 
 void main()
 {
-    gl_Position = transform * vec4(aPos.x, aPos.y, aPos.z, 1.0);
-    TexCoord = uv;
+    UV_VERT_OUT_FRAG_IN = UV_IN;
+    POS_VERT_OUT_FRAG_IN = POS_IN;
+    gl_Position = TRANSFORM_IN * vec4(POS_IN.x, POS_IN.y, POS_IN.z, 1.0);
 }
