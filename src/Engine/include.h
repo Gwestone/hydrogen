@@ -25,5 +25,9 @@
 #include <sstream>
 #include "glm/gtc/type_ptr.hpp"
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
+
 
 #endif //HYDROGEN_INCLUDE_H
