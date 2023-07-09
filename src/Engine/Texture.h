@@ -2,11 +2,7 @@
 #define HYDROGEN_TEXTURE_H
 
 
-#include <vector>
-#include <string>
-#include <iostream>
-#include "stb_image.h"
-#include "glad/glad.h"
+#include "include.h"
 
 namespace Engine{
     class Texture {

@@ -2,21 +2,15 @@
 #define HYDROGEN_MODEL_H
 
 
-#include <string>
-#include <memory>
+
+#include "include.h"
 #include "Mesh.h"
 #include "Shader.h"
-#include "assimp/scene.h"
+
 #include "Texture.h"
 #include "TextureArray.h"
 #include "BuffersArray_AOS.h"
 #include "Camera.h"
-#include "glad/glad.h"
-#include <iostream>
-
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
 
 namespace Engine{
     class Model {

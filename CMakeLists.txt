@@ -15,7 +15,7 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 link_libraries(${OPENGL_LIBRARIES})
 
 # Add your source files
-add_executable(hydrogen src/main.cpp src/Engine/Shader.cpp src/Engine/Shader.h src/Engine/BuffersArray_AOS.cpp src/Engine/BuffersArray_AOS.h src/Engine/Texture.cpp src/Engine/Texture.h src/Engine/TextureArray.cpp src/Engine/TextureArray.h src/Engine/Camera.cpp src/Engine/Camera.h src/Engine/Timer.cpp src/Engine/Timer.h src/Engine/App.cpp src/Engine/App.h src/Engine/Window.cpp src/Engine/Window.h src/Engine/Mesh.cpp src/Engine/Mesh.h src/Engine/Model.cpp src/Engine/Model.h src/Engine/Vertex.h src/Engine/WindowData.h src/MyApp.cpp src/MyApp.h)
+add_executable(hydrogen src/main.cpp src/Engine/Shader.cpp src/Engine/Shader.h src/Engine/BuffersArray_AOS.cpp src/Engine/BuffersArray_AOS.h src/Engine/Texture.cpp src/Engine/Texture.h src/Engine/TextureArray.cpp src/Engine/TextureArray.h src/Engine/Camera.cpp src/Engine/Camera.h src/Engine/Timer.cpp src/Engine/Timer.h src/Engine/App.cpp src/Engine/App.h src/Engine/Window.cpp src/Engine/Window.h src/Engine/Mesh.cpp src/Engine/Mesh.h src/Engine/Model.cpp src/Engine/Model.h src/Engine/Vertex.h src/Engine/WindowData.h src/MyApp.h src/Engine/EngineConfig.h src/Engine/include.h)
 
 # including glad, stb libs in project
 add_subdirectory(libs/glad/)

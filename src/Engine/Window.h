@@ -1,8 +1,7 @@
 #ifndef HYDROGEN_WINDOW_H
 #define HYDROGEN_WINDOW_H
 
-#include <iostream>
-#include <GLFW/glfw3.h>
+#include "include.h"
 #include "WindowData.h"
 
 namespace Engine{

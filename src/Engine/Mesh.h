@@ -1,9 +1,8 @@
 #ifndef HYDROGEN_MESH_H
 #define HYDROGEN_MESH_H
 
+#include "include.h"
 
-#include <vector>
-#include <memory>
 #include "Vertex.h"
 #include "BuffersArray_AOS.h"
 #include "TextureArray.h"

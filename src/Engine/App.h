@@ -1,16 +1,12 @@
 #ifndef HYDROGEN_APP_H
 #define HYDROGEN_APP_H
 
+#include "include.h"
 
-#include "glad/glad.h"
-#include <memory>
-#include "glm/vec3.hpp"
 #include "Window.h"
 #include "Timer.h"
-#include "stb_image.h"
-#include <iostream>
 #include "WindowData.h"
-#include "glm/geometric.hpp"
+#include "EngineConfig.h"
 
 namespace Engine{
     class App {
@@ -37,6 +33,9 @@ namespace Engine{
 
         // timer
         std::unique_ptr<Timer> timer;
+
+        //config
+        EngineConfig config;
 
         // settings
         const unsigned int SCR_WIDTH = 800;

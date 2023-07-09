@@ -1,5 +1,4 @@
 #include "BuffersArray_AOS.h"
-#include "glad/glad.h"
 
 namespace Engine{
 

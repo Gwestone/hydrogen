@@ -1,8 +1,7 @@
 #ifndef HYDROGEN_BUFFERSARRAY_AOS_H
 #define HYDROGEN_BUFFERSARRAY_AOS_H
 
-
-#include <vector>
+#include "include.h"
 
 namespace Engine{
     class BuffersArray_AOS {

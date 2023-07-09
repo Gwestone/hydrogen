@@ -1,11 +1,9 @@
 #ifndef HYDROGEN_TEXTUREARRAY_H
 #define HYDROGEN_TEXTUREARRAY_H
 
+#include "include.h"
 #include "Texture.h"
 #include "Shader.h"
-#include <memory>
-#include "glad/glad.h"
-
 
 namespace Engine{
     class TextureArray {

@@ -1,9 +1,7 @@
 #ifndef HYDROGEN_VERTEX_H
 #define HYDROGEN_VERTEX_H
 
-
-#include "glm/vec3.hpp"
-#include "glm/vec2.hpp"
+#include "include.h"
 
 namespace Engine{
     struct Vertex {

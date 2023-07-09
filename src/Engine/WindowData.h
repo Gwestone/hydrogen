@@ -1,7 +1,7 @@
 #ifndef HYDROGEN_WINDOWDATA_H
 #define HYDROGEN_WINDOWDATA_H
 
-#include "glm/vec3.hpp"
+#include "include.h"
 
 namespace Engine{
     struct WindowData{
@@ -17,6 +17,8 @@ namespace Engine{
         float lastY =  600.0 / 2.0;
         float fov   =  45.0f;
         float speed =  2.5f;
+
+        int height = 600, width = 800;
     };
 }
 

@@ -1,7 +1,7 @@
 #ifndef HYDROGEN_TIMER_H
 #define HYDROGEN_TIMER_H
 
-#include <GLFW/glfw3.h>
+#include "include.h"
 
 namespace Engine{
     class Timer {

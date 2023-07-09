@@ -1,5 +1,4 @@
 #include "Mesh.h"
-#include "glad/glad.h"
 
 namespace Engine{
     Mesh::Mesh(const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices, const std::vector<Texture> &_textures) : vertices(_vertices), indices(_indices) {

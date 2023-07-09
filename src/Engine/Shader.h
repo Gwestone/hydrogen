@@ -1,15 +1,7 @@
 #ifndef HYDROGEN_SHADER_H
 #define HYDROGEN_SHADER_H
 
-#include <string>
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include "glm/gtc/type_ptr.hpp"
-#include "glad/glad.h"
+#include "include.h"
 
 namespace Engine{
     class Shader {
