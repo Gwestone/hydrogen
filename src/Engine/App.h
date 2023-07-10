@@ -7,6 +7,7 @@
 #include "Timer.h"
 #include "WindowData.h"
 #include "EngineConfig.h"
+#include "Log.h"
 
 namespace Engine{
     class App {

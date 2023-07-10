@@ -15,7 +15,7 @@ namespace Engine{
         Mesh(const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices, const std::vector<Texture> &_textures);
         ~Mesh();
 
-        void Draw(const Shader &shader);
+        void Draw(const Shader& shader);
 
     private:
         std::vector<Vertex> vertices;

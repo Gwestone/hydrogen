@@ -1,35 +1,46 @@
-#include "glm/trigonometric.hpp"
 #include "App.h"
 
 namespace Engine{
 
     App::App() {
 
+        Engine::Log::Init();
+
+        HY_ENGINE_INFO("Engine initialization started.");
+
         //init timer
+        HY_ENGINE_TRACE("Initialization of engine clock.");
         timer = std::make_unique<Timer>();
 
+        HY_ENGINE_TRACE("Initialization of main window.");
         window = std::make_unique<Window>(SCR_WIDTH, SCR_HEIGHT, windowName);
 
+        HY_ENGINE_TRACE("Configuration of window.");
         window->setUserPointer(&windowData);
         window->setCursorPosCallback(mouse_callback);
         window->setScrollCallback(scroll_callback);
         window->setMouseButtonCallback(onMouseButton);
 //        window->hideCursor();
 
+        HY_ENGINE_TRACE("Loading opengl functions.");
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            std::cout << "Failed to initialize GLAD" << std::endl;
+            HY_ENGINE_ERROR("Failed to load opengl functions through glad!");
             exit(EXIT_SUCCESS);
         }
 
+        HY_ENGINE_TRACE("Configuring opengl.");
         glEnable(GL_DEPTH_TEST);
 
         stbi_set_flip_vertically_on_load(true);
 
+        HY_ENGINE_INFO("Engine initialization completed.");
     }
 
     App::~App() {
+        HY_ENGINE_INFO("Engine shutdown started.");
         glfwTerminate();
         exit(EXIT_SUCCESS);
+        HY_ENGINE_INFO("Engine shutdown completed.");
     }
 
     void App::runLoop() {

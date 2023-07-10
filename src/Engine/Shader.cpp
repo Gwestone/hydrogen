@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "Log.h"
 
 namespace Engine{
     Shader::Shader(const std::string &vertName, const std::string &fragName) {
@@ -50,7 +51,7 @@ namespace Engine{
         glGetProgramiv(ID, GL_LINK_STATUS, &success);
         if (!success) {
             glGetProgramInfoLog(ID, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+            HY_ENGINE_ERROR("Failed Shader linking: {0} .", infoLog);
         }
     }
 
@@ -72,7 +73,7 @@ namespace Engine{
         }
         catch(std::ifstream::failure e)
         {
-            std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+            HY_ENGINE_ERROR("Failed Shader reading.");
         }
         return shaderSource;
     }
@@ -88,7 +89,7 @@ namespace Engine{
         if (!success)
         {
             glGetShaderInfoLog(shader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+            HY_ENGINE_ERROR("Failed Shader compilation: {0} .", infoLog);
             return -1;
         } else{
             return shader;

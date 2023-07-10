@@ -1,4 +1,5 @@
 #include "Timer.h"
+#include "Log.h"
 
 
 namespace Engine{
