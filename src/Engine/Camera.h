@@ -11,7 +11,9 @@ namespace Engine{
         Camera(const glm::vec3 &_cameraPos, const glm::vec3 &_cameraFront, float _fov, float scr_width,
                float scr_height);
         void updateCamera(const glm::vec3& _cameraPos, const glm::vec3& _cameraFront, float _fov, float scr_width, float scr_height);
+
         glm::mat4 getCameraMatrix();
+        glm::vec3 getCameraPos();
     private:
         float fov;
         glm::vec3 cameraPos;

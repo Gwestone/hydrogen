@@ -18,8 +18,13 @@ namespace Engine{
     }
 
 
+
     glm::mat4 Camera::getCameraMatrix() {
         return projection * view;
+    }
+
+    glm::vec3 Camera::getCameraPos() {
+        return cameraPos;
     }
 
 }

@@ -26,12 +26,22 @@ namespace Engine{
         ~Model();
         void Draw(const Shader &shader);
         void loadModel(const std::string& path);
+
+        void setPos(const glm::vec3& _pos){pos = _pos;}
+        void setScale(const glm::vec3& _scale){scale = _scale;}
+        void setRotation(const glm::vec3& _rotation){rotate = _rotation;}
+
+        glm::mat4 getModelMatrix();
     private:
 
         // model data
         std::vector<Mesh> meshes;
         std::string directory;
         std::vector<Texture> textures_loaded;
+
+        glm::vec3 pos = glm::vec3(0);
+        glm::vec3 scale = glm::vec3(1);
+        glm::vec3 rotate = glm::vec3(0);
 
     };
 }

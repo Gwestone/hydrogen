@@ -138,4 +138,20 @@ namespace Engine{
         }
         return textures;
     }
+
+    glm::mat4 Model::getModelMatrix() {
+        auto model = glm::mat4(1.0);
+        //scale first translate second
+        model = glm::scale(model, scale);
+        model = glm::translate(model, pos);
+
+        //rotate x
+        model = glm::rotate(model, rotate.x, {1, 0, 0});
+        //rotate y
+        model = glm::rotate(model, rotate.y, {0, 1, 0});
+        //rotate z
+        model = glm::rotate(model, rotate.z, {0, 0, 1});
+
+        return model;
+    }
 }
