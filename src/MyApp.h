@@ -11,7 +11,7 @@ class MyApp : public Engine::App{
     void update() override{
         camera->updateCamera(windowData.cameraPos, windowData.cameraFront, windowData.fov, windowData.width, windowData.height);
 
-//        lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;;
+//        lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
 //        lightPos.z = sin(glfwGetTime() / 2.0f) * 1.0f;
     }
 
@@ -19,6 +19,7 @@ class MyApp : public Engine::App{
         shader->use();
         shader->setVec3("LIGHT_COLOR_IN", lightColor);
         shader->setVec3("LIGHT_POS_IN", lightPos);
+//        shader->setVec3("LIGHT_DIRECTION", lightPos);
 
         shader->setVec3("CAMERA_POS_IN", camera->getCameraPos());
 
@@ -31,7 +32,7 @@ class MyApp : public Engine::App{
     std::unique_ptr<Engine::Shader> shader;
     std::unique_ptr<Engine::Model> model;
 
-    glm::vec3 lightPos = glm::vec3(0, 0, -10);
+    glm::vec3 lightPos = glm::vec3(10, 10, 10);
     glm::vec3 lightColor = glm::vec3(1, 0.5, 1);
 
 
