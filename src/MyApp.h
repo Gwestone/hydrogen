@@ -32,7 +32,7 @@ class MyApp : public Engine::App{
     std::unique_ptr<Engine::Shader> shader;
     std::unique_ptr<Engine::Model> model;
 
-    glm::vec3 lightPos = glm::vec3(10, 10, 10);
+    glm::vec3 lightPos = glm::vec3(0, 0, -14);
     glm::vec3 lightColor = glm::vec3(1, 0.5, 1);
 
 
@@ -44,7 +44,7 @@ public:
 //        glCullFace(GL_FRONT);
 //        glFrontFace(GL_CW);
 
-        shader = std::make_unique<Engine::Shader>("base_light/shader.vert", "base_light/shader.frag");
+        shader = std::make_unique<Engine::Shader>("spotlight_light/shader.vert", "spotlight_light/shader.frag");
         camera = std::make_unique<Engine::Camera>(windowData.cameraPos, windowData.cameraFront, windowData.fov, SCR_WIDTH, SCR_HEIGHT);
         model = std::make_unique<Engine::Model>("assets/models/backpack/backpack.obj");
 
