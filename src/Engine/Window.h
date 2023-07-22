@@ -13,7 +13,7 @@ namespace Engine{
     public:
         Window(int _width, int _height, const std::string& _name);
         ~Window();
-        GLFWwindow* get();
+        GLFWwindow* getWindow();
 
         void setScrollCallback(GLFWscrollfun callback);
         void setCursorPosCallback(GLFWcursorposfun callback);

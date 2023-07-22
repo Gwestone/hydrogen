@@ -44,7 +44,7 @@ namespace Engine{
     }
 
     void App::runLoop() {
-        while (!glfwWindowShouldClose(window->get())) {
+        while (!glfwWindowShouldClose(window->getWindow())) {
 
             //per-frame time logic
             // -----
@@ -75,27 +75,27 @@ namespace Engine{
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
-            glfwSwapBuffers(window->get());
+            glfwSwapBuffers(window->getWindow());
             glfwPollEvents();
         }
     }
 
     void App::processInput(const std::unique_ptr<Window> &window) {
-        if (glfwGetKey(window->get(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(window->get(), true);
+        if (glfwGetKey(window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window->getWindow(), true);
 
         auto cameraSpeed = static_cast<float>(windowData.speed * timer->getFrameTime());
-        if (glfwGetKey(window->get(), GLFW_KEY_W) == GLFW_PRESS)
+        if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
             windowData.cameraPos += (cameraSpeed * windowData.cameraFront);
-        if (glfwGetKey(window->get(), GLFW_KEY_S) == GLFW_PRESS)
+        if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
             windowData.cameraPos -= (cameraSpeed * windowData.cameraFront);
-        if (glfwGetKey(window->get(), GLFW_KEY_A) == GLFW_PRESS)
+        if (glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
             windowData.cameraPos -= glm::normalize(glm::cross(windowData.cameraFront, windowData.cameraUp)) * cameraSpeed;
-        if (glfwGetKey(window->get(), GLFW_KEY_D) == GLFW_PRESS)
+        if (glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
             windowData.cameraPos += glm::normalize(glm::cross(windowData.cameraFront, windowData.cameraUp)) * cameraSpeed;
-        if (glfwGetKey(window->get(), GLFW_KEY_SPACE) == GLFW_PRESS)
+        if (glfwGetKey(window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
             windowData.cameraPos += glm::normalize(windowData.cameraUp) * cameraSpeed;
-        if (glfwGetKey(window->get(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        if (glfwGetKey(window->getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
             windowData.cameraPos -= glm::normalize(windowData.cameraUp) * cameraSpeed;
 
     }

@@ -37,7 +37,7 @@ namespace Engine{
         glfwTerminate();
     }
 
-    GLFWwindow *Window::get() {
+    GLFWwindow *Window::getWindow() {
         return window;
     }
 

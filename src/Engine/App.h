@@ -24,7 +24,6 @@ namespace Engine{
         ~App();
         void runLoop();
     private:
-        std::unique_ptr<Window> window;
 
         std::string windowName = "My window";
     protected:
@@ -41,6 +40,7 @@ namespace Engine{
         // settings
         const unsigned int SCR_WIDTH = 800;
         const unsigned int SCR_HEIGHT = 600;
+        std::unique_ptr<Window> window;
     };
 }
 

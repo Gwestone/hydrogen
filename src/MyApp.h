@@ -5,6 +5,9 @@
 #include "Engine/App.h"
 #include "Engine/Shader.h"
 #include "Engine/Model.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 class MyApp : public Engine::App{
 
@@ -16,6 +19,7 @@ class MyApp : public Engine::App{
     }
 
     void render() override{
+
         shader->use();
 //        shader->setVec3("LIGHT_COLOR_IN", lightColor);
 //        shader->setVec3("LIGHT_POS_IN", lightPos);
@@ -41,6 +45,14 @@ class MyApp : public Engine::App{
         shader->setMatrix4x4("TRANSFORM_IN", camera->getCameraMatrix());
         shader->setMatrix4x4("MODEL_IN", model->getModelMatrix());
         model->Draw(*shader);
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
+        ImGui::ShowDemoWindow();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     std::unique_ptr<Engine::Camera> camera;
@@ -53,6 +65,19 @@ class MyApp : public Engine::App{
 
 public:
     MyApp() : App(){
+
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+//        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+
+        ImGui::StyleColorsDark();
+        ImGui_ImplGlfw_InitForOpenGL(window->getWindow(), true);
+        ImGui_ImplOpenGL3_Init("#version 450");
+
 //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 //        glEnable(GL_CULL_FACE);
