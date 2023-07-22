@@ -17,9 +17,14 @@ class MyApp : public Engine::App{
 
     void render() override{
         shader->use();
-        shader->setVec3("LIGHT_COLOR_IN", lightColor);
-        shader->setVec3("LIGHT_POS_IN", lightPos);
+//        shader->setVec3("LIGHT_COLOR_IN", lightColor);
+//        shader->setVec3("LIGHT_POS_IN", lightPos);
 //        shader->setVec3("LIGHT_DIRECTION", lightPos);
+
+        shader->setVec3("light.ambient", lightColor);
+        shader->setVec3("light.diffuse", lightColor);
+        shader->setVec3("light.specular", lightColor);
+        shader->setVec3("light.position", lightPos);
 
         shader->setVec3("CAMERA_POS_IN", camera->getCameraPos());
 
@@ -44,7 +49,7 @@ public:
 //        glCullFace(GL_FRONT);
 //        glFrontFace(GL_CW);
 
-        shader = std::make_unique<Engine::Shader>("spotlight_light/shader.vert", "spotlight_light/shader.frag");
+        shader = std::make_unique<Engine::Shader>("light/shader.vert", "light/shader.frag");
         camera = std::make_unique<Engine::Camera>(windowData.cameraPos, windowData.cameraFront, windowData.fov, SCR_WIDTH, SCR_HEIGHT);
         model = std::make_unique<Engine::Model>("assets/models/backpack/backpack.obj");
 

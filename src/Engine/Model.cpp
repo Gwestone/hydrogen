@@ -95,16 +95,16 @@ namespace Engine{
         // normal: texture_normalN
 
         // 1. diffuse maps
-        std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "TEXTURE_DIFFUSE");
+        std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "material.TEXTURE_DIFFUSE_0");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
         // 2. specular maps
-        std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "TEXTURE_SPECULAR");
+        std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "material.TEXTURE_SPECULAR_0");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         // 3. normal maps
-        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "TEXTURE_NORMAL");
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "material.TEXTURE_NORMAL_0");
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
         // 4. height maps
-        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "TEXTURE_HEIGHT");
+        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "material.TEXTURE_HEIGHT_0");
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
         // return a mesh object created from the extracted mesh data
@@ -129,7 +129,7 @@ namespace Engine{
             }
             if(!skip)
             {   // if texture hasn't been loaded already, load it
-                Texture texture(typeName + "_" + std::to_string(i), directory + "/" + str.C_Str());
+                Texture texture(typeName, directory + "/" + str.C_Str());
                 texture.type = typeName;
                 texture.path = str.C_Str();
                 textures.push_back(texture);
