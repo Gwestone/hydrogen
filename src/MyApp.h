@@ -21,10 +21,20 @@ class MyApp : public Engine::App{
 //        shader->setVec3("LIGHT_POS_IN", lightPos);
 //        shader->setVec3("LIGHT_DIRECTION", lightPos);
 
-        shader->setVec3("light.ambient", lightColor);
-        shader->setVec3("light.diffuse", lightColor);
-        shader->setVec3("light.specular", lightColor);
-        shader->setVec3("light.position", lightPos);
+        shader->setFloat("material.shininess", 256.0f);
+
+        shader->setVec3("pointLights[0].position", lightPos);
+        shader->setFloat("pointLights[0].constant", 1.0f);
+        shader->setFloat("pointLights[0].linear", 0.09f);
+        shader->setFloat("pointLights[0].quadratic", 0.032f);
+        shader->setVec3("pointLights[0].ambient", lightColor);
+        shader->setVec3("pointLights[0].diffuse", lightColor);
+        shader->setVec3("pointLights[0].specular", lightColor);
+
+        shader->setVec3("dirLight.position", lightPos);
+        shader->setVec3("dirLight.ambient", lightColor);
+        shader->setVec3("dirLight.diffuse", lightColor);
+        shader->setVec3("dirLight.specular", lightColor);
 
         shader->setVec3("CAMERA_POS_IN", camera->getCameraPos());
 
