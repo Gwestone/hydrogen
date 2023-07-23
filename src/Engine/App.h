@@ -8,6 +8,7 @@
 #include "WindowData.h"
 #include "EngineConfig.h"
 #include "Log.h"
+#include "systems/IRenderSystem.h"
 
 namespace Engine{
     class App {
@@ -15,7 +16,7 @@ namespace Engine{
         void virtual update() = 0;
         void virtual render() = 0;
 
-        void processInput(const std::unique_ptr<Window>& window);
+        void processInput(const std::shared_ptr<Window>& window);
         static void onMouseButton(GLFWwindow* window, int button, int action, int mods);
         static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
         static void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
@@ -40,7 +41,10 @@ namespace Engine{
         // settings
         const unsigned int SCR_WIDTH = 800;
         const unsigned int SCR_HEIGHT = 600;
-        std::unique_ptr<Window> window;
+        std::shared_ptr<Window> window;
+        std::vector<std::unique_ptr<RenderSystems::IRenderSystem>> renderSystems;
+
+        void addRenderSystem(std::unique_ptr<RenderSystems::IRenderSystem> renderSystem);
     };
 }
 

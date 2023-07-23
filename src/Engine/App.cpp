@@ -13,7 +13,7 @@ namespace Engine{
         timer = std::make_unique<Timer>();
 
         HY_ENGINE_TRACE("Initialization of main window.");
-        window = std::make_unique<Window>(SCR_WIDTH, SCR_HEIGHT, windowName);
+        window = std::make_shared<Window>(SCR_WIDTH, SCR_HEIGHT, windowName);
 
         HY_ENGINE_TRACE("Configuration of window.");
         window->setUserPointer(&windowData);
@@ -32,6 +32,8 @@ namespace Engine{
         glEnable(GL_DEPTH_TEST);
 
         stbi_set_flip_vertically_on_load(true);
+
+        renderSystems = std::vector<std::unique_ptr<RenderSystems::IRenderSystem>>();
 
         HY_ENGINE_INFO("Engine initialization completed.");
     }
@@ -70,6 +72,10 @@ namespace Engine{
 
             render();
 
+            for (const auto& a : renderSystems) {
+                a->Render();
+            }
+
             // draw our first triangle
 //        object->Draw(camera);
 
@@ -80,7 +86,7 @@ namespace Engine{
         }
     }
 
-    void App::processInput(const std::unique_ptr<Window> &window) {
+    void App::processInput(const std::shared_ptr<Window> &window) {
         if (glfwGetKey(window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window->getWindow(), true);
 
@@ -168,5 +174,10 @@ namespace Engine{
             data->fov = 1.0f;
         if (data->fov > 45.0f)
             data->fov = 45.0f;
+    }
+
+    void App::addRenderSystem(std::unique_ptr<RenderSystems::IRenderSystem> renderSystem) {
+        renderSystem->Init();
+        renderSystems.push_back(std::move(renderSystem));
     }
 }
