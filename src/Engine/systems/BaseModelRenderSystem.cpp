@@ -24,9 +24,9 @@ namespace Engine::RenderSystems {
             shader->setVec3("pointLights[0].specular", lightColor);
 
             shader->setVec3("dirLight.position", lightPos);
-            shader->setVec3("dirLight.ambient", lightColor);
-            shader->setVec3("dirLight.diffuse", lightColor);
-            shader->setVec3("dirLight.specular", lightColor);
+            shader->setVec3("dirLight.ambient", {0.0f, 0.0f, 0.0f});
+            shader->setVec3("dirLight.diffuse", {0.0f, 0.0f, 0.0f});
+            shader->setVec3("dirLight.specular", {0.0f, 0.0f, 0.0f});
 
             shader->setVec3("CAMERA_POS_IN", camera->getCameraPos());
 

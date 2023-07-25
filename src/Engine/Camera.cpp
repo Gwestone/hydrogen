@@ -27,4 +27,8 @@ namespace Engine{
         return cameraPos;
     }
 
+    glm::mat4 Camera::getViewMatrix() {
+        return view;
+    }
+
 }

@@ -21,7 +21,7 @@ namespace Engine::RenderSystems {
         std::unique_ptr<Engine::Shader> shader;
         std::unique_ptr<Engine::Model> model;
 
-        glm::vec3 lightPos = glm::vec3(0, 0, -14);
+        glm::vec3 lightPos = glm::vec3(2, 2, 2);
         glm::vec3 lightColor = glm::vec3(1, 0.5, 1);
     };
 

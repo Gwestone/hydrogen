@@ -30,6 +30,8 @@ namespace Engine{
 
         HY_ENGINE_TRACE("Configuring opengl.");
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
 
         stbi_set_flip_vertically_on_load(true);
 
@@ -59,6 +61,10 @@ namespace Engine{
             //update
             // -----
             update();
+
+            for (const auto& a : renderSystems) {
+                a->Update();
+            }
 //        camera.updateCamera(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
 
             // render
