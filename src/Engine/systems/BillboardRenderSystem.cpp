@@ -20,11 +20,11 @@ namespace Engine::RenderSystems {
 
         std::vector<unsigned int> indices = {1, 2, 3, 2, 1, 0};
 
-        std::vector<Texture> textures = {};
+        std::vector<Texture> textures = {Texture("TEXTURE_DIFFUSE_0", "./assets/textures/bulb.png")};
 
         mesh = std::make_unique<Engine::Mesh>(vertices, indices, textures);
 
-//        model = glm::mat4(1.0f);
+        model = glm::mat4(1.0f);
     }
 
     void BillboardRenderSystem::Update() {
@@ -36,12 +36,9 @@ namespace Engine::RenderSystems {
 
         up = glm::normalize(glm::cross(direction, right));
 
-        // Step 6: Create scale and translation matrices
-
         glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
         glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), pos);
 
-        // Step 5: Create the rotation matrix to align the billboard with the camera
         glm::mat4 rotationMatrix(
                 glm::vec4(right, 0.0f),
                 glm::vec4(up, 0.0f),
@@ -51,32 +48,13 @@ namespace Engine::RenderSystems {
 
         model = translationMatrix * rotationMatrix * scaleMatrix;
 
-//        model = glm::mat4(1.0);
-//        model = glm::scale(model, scale);
-////        model = glm::rotate(model, theta, rotationAxis);
-//
-//        model = rotationMatrix * model;
-
-        //rotate x
-//        model = glm::rotate(model, rotate.x, {1, 0, 0});
-//        //rotate y
-//        model = glm::rotate(model, rotate.y, {0, 1, 0});
-//        //rotate z
-//        model = glm::rotate(model, rotate.z, {0, 0, 1});
-
-//        model = glm::translate(model, pos);
-
-//        model = glm::rotate(model, rotationAngle, rotationAxis);
-
     }
 
     void BillboardRenderSystem::Render() {
         shader->use();
 
-//        shader->setVec3("POSITION_IN", pos);
         shader->setMatrix4x4("TRANSFORM_IN", camera->getCameraMatrix());
         shader->setMatrix4x4("MODEL_IN", model);
-//        shader->setMatrix4x4("VIEW_IN", camera->getViewMatrix());
 
         mesh->Draw(*shader);
     }

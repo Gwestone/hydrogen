@@ -55,9 +55,9 @@ public:
 
         camera = std::make_shared<Engine::Camera>(windowData.cameraPos, windowData.cameraFront, windowData.fov, SCR_WIDTH, SCR_HEIGHT);
 
-        this->addRenderSystem(std::make_unique<Engine::RenderSystems::BaseModelRenderSystem>(camera));
-        this->addRenderSystem(std::make_unique<Engine::RenderSystems::BillboardRenderSystem>(glm::vec3(2, 2, 2), camera));
-        this->addRenderSystem(std::make_unique<Engine::RenderSystems::ImguiRenderSystem>(window));
+        this->addRenderSystem(std::move(std::make_unique<Engine::RenderSystems::BaseModelRenderSystem>(camera)));
+        this->addRenderSystem(std::move(std::make_unique<Engine::RenderSystems::BillboardRenderSystem>(glm::vec3(2, 2, 2), camera)));
+        this->addRenderSystem(std::move(std::make_unique<Engine::RenderSystems::ImguiRenderSystem>(window)));
 
 //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
