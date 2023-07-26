@@ -1,8 +1,8 @@
-#include "App.h"
+#include "Application.h"
 
 namespace Engine{
 
-    App::App() {
+    Application::Application() {
 
         Engine::Log::Init();
 
@@ -10,10 +10,10 @@ namespace Engine{
 
         //init timer
         HY_ENGINE_TRACE("Initialization of engine clock.");
-        timer = std::make_unique<Timer>();
+        timer = CreateScope<Timer>();
 
         HY_ENGINE_TRACE("Initialization of main window.");
-        window = std::make_shared<Window>(SCR_WIDTH, SCR_HEIGHT, windowName);
+        window = CreateRef<Window>(SCR_WIDTH, SCR_HEIGHT, windowName);
 
         HY_ENGINE_TRACE("Configuration of window.");
         window->setUserPointer(&windowData);
@@ -37,19 +37,19 @@ namespace Engine{
 
         stbi_set_flip_vertically_on_load(true);
 
-        renderSystems = std::vector<std::unique_ptr<RenderSystems::IRenderSystem>>();
+        renderSystems = std::vector<Ref<RenderSystems::IRenderSystem>>();
 
         HY_ENGINE_INFO("Engine initialization completed.");
     }
 
-    App::~App() {
+    Application::~Application() {
         HY_ENGINE_INFO("Engine shutdown started.");
         glfwTerminate();
         exit(EXIT_SUCCESS);
         HY_ENGINE_INFO("Engine shutdown completed.");
     }
 
-    void App::runLoop() {
+    void Application::runLoop() {
         while (!glfwWindowShouldClose(window->getWindow())) {
 
             //per-frame time logic
@@ -58,7 +58,7 @@ namespace Engine{
 
             // input
             // -----
-            processInput(window);
+            processInput();
 
             //update
             // -----
@@ -67,25 +67,17 @@ namespace Engine{
             for (const auto& a : renderSystems) {
                 a->Update();
             }
-//        camera.updateCamera(cameraPos, cameraFront, fov, SCR_WIDTH, SCR_HEIGHT);
 
             // render
             // ------
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//        shader.use();
-//        shader.setMatrix4x4("TRANSFORM_IN", camera.getCameraMatrix());
-//        model.Draw(shader);
-
             render();
 
             for (const auto& a : renderSystems) {
                 a->Render();
             }
-
-            // draw our first triangle
-//        object->Draw(camera);
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
@@ -94,7 +86,7 @@ namespace Engine{
         }
     }
 
-    void App::processInput(const std::shared_ptr<Window> &window) {
+    void Application::processInput() {
         if (glfwGetKey(window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window->getWindow(), true);
 
@@ -114,7 +106,7 @@ namespace Engine{
 
     }
 
-    void App::onMouseButton(GLFWwindow *window, int button, int action, int mods) {
+    void Application::onMouseButton(GLFWwindow *window, int button, int action, int mods) {
 
         auto* data = (WindowData*)glfwGetWindowUserPointer( window );
 
@@ -125,7 +117,7 @@ namespace Engine{
         data->rightButtonPressed = false;
     }
 
-    void App::mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
+    void Application::mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
 
         auto* data = (WindowData*)glfwGetWindowUserPointer( window );
 
@@ -173,7 +165,7 @@ namespace Engine{
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
-    void App::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    void Application::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 
         auto* data = (WindowData*)glfwGetWindowUserPointer( window );
 
@@ -184,7 +176,7 @@ namespace Engine{
             data->fov = 45.0f;
     }
 
-    void App::addRenderSystem(std::unique_ptr<RenderSystems::IRenderSystem> renderSystem) {
+    void Application::addRenderSystem(Ref<RenderSystems::IRenderSystem> renderSystem) {
         renderSystem->Init();
         renderSystems.push_back(std::move(renderSystem));
     }

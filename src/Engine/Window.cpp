@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "WindowData.h"
+#include "Log.h"
 
 namespace Engine{
 
@@ -16,7 +16,7 @@ namespace Engine{
         // --------------------
         window = glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
         if (window == nullptr) {
-            std::cout << "Failed to create GLFW window" << std::endl;
+            HY_ENGINE_ERROR("Failed to create GLFW window");
             glfwTerminate();
             exit(EXIT_FAILURE);
         }

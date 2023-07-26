@@ -1,8 +1,9 @@
 #include "Log.h"
+#include "Core/Base.h"
 
 namespace Engine {
 
-    std::shared_ptr<spdlog::logger> Log::s_EngineLogger;
+    Ref<spdlog::logger> Log::s_EngineLogger;
 
     void Log::Init() {
         spdlog::set_pattern("%^[%T] %n: %v%$");
