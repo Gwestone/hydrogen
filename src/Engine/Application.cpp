@@ -110,11 +110,12 @@ namespace Engine{
 
         auto* data = (WindowData*)glfwGetWindowUserPointer( window );
 
-        if( button == GLFW_MOUSE_BUTTON_RIGHT ) {
+        if( button == GLFW_MOUSE_BUTTON_RIGHT and (action == GLFW_PRESS or action == GLFW_REPEAT)) {
             data->rightButtonPressed = true;
             return;
+        } else if (button == GLFW_MOUSE_BUTTON_RIGHT and action == GLFW_RELEASE){
+            data->rightButtonPressed = false;
         }
-        data->rightButtonPressed = false;
     }
 
     void Application::mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {

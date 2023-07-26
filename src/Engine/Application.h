@@ -8,7 +8,7 @@
 #include "WindowData.h"
 #include "EngineConfig.h"
 #include "Log.h"
-#include "systems/IRenderSystem.h"
+#include "Systems/IRenderSystem.h"
 #include "Core/Base.h"
 
 namespace Engine{
