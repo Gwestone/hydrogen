@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "Log.h"
+#include "Core/Base.h"
 
 namespace Engine{
 
@@ -43,7 +44,7 @@ namespace Engine{
 
     void Window::framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 
-        auto* data = (WindowData*)glfwGetWindowUserPointer( window );
+        auto* data = (ApplicationData*)glfwGetWindowUserPointer(window );
 
         data->width = width;
         data->height = height;
@@ -53,7 +54,7 @@ namespace Engine{
         glViewport(0, 0, width, height);
     }
 
-    void Window::setUserPointer(WindowData* data) {
+    void Window::setUserPointer(ApplicationData* data) {
         glfwSetWindowUserPointer(window, data);
     }
 
@@ -71,5 +72,9 @@ namespace Engine{
 
     void Window::hideCursor() {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    }
+
+    void Window::SetEventBus(const Ref<EventBus>& _eventBus) {
+        eventBus = _eventBus;
     }
 }

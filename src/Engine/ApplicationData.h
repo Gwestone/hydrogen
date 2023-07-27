@@ -1,10 +1,10 @@
-#ifndef HYDROGEN_WINDOWDATA_H
-#define HYDROGEN_WINDOWDATA_H
+#ifndef HYDROGEN_APPLICATIONDATA_H
+#define HYDROGEN_APPLICATIONDATA_H
 
 #include "include.h"
 
 namespace Engine{
-    struct WindowData{
+    struct ApplicationData{
         glm::vec3 cameraPos =   glm::vec3(0.0f, 0.0f, 5.0f);
         glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
         glm::vec3 cameraUp =    glm::vec3(0.0f, 1.0f, 0.0f);
@@ -23,4 +23,4 @@ namespace Engine{
 }
 
 
-#endif //HYDROGEN_WINDOWDATA_H
+#endif //HYDROGEN_APPLICATIONDATA_H

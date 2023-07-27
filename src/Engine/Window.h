@@ -2,7 +2,9 @@
 #define HYDROGEN_WINDOW_H
 
 #include "include.h"
-#include "WindowData.h"
+#include "ApplicationData.h"
+#include "Event/Event.h"
+#include "Core/Base.h"
 
 namespace Engine{
     class Window {
@@ -18,7 +20,9 @@ namespace Engine{
         void setScrollCallback(GLFWscrollfun callback);
         void setCursorPosCallback(GLFWcursorposfun callback);
         void setMouseButtonCallback(GLFWmousebuttonfun callback);
-        void setUserPointer(WindowData *data);
+        void setUserPointer(ApplicationData *data);
+
+        void SetEventBus(const Ref<EventBus>& _eventBus);
 
         void hideCursor();
 
@@ -26,6 +30,7 @@ namespace Engine{
         GLFWwindow* window;
         int width, height;
         std::string name;
+        Ref<EventBus> eventBus;
     };
 }
 

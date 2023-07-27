@@ -16,7 +16,7 @@ using namespace Engine;
 class MyApp : public Application{
 
     void update() override{
-        camera->updateCamera(windowData.cameraPos, windowData.cameraFront, windowData.fov, windowData.width, windowData.height);
+        camera->updateCamera(appData.cameraPos, appData.cameraFront, appData.fov, appData.width, appData.height);
     }
 
     void render() override{
@@ -29,7 +29,7 @@ class MyApp : public Application{
 public:
     MyApp() : Application(){
 
-        camera = CreateRef<Camera>(windowData.cameraPos, windowData.cameraFront, windowData.fov, SCR_WIDTH, SCR_HEIGHT);
+        camera = CreateRef<Camera>(appData.cameraPos, appData.cameraFront, appData.fov, SCR_WIDTH, SCR_HEIGHT);
 
         this->addRenderSystem(CreateRef<RenderSystems::BaseModelRenderSystem>(camera));
         this->addRenderSystem(CreateRef<RenderSystems::BillboardRenderSystem>(glm::vec3(2, 2, 2), camera));

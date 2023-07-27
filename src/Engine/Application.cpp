@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Event/KeyEvent.h"
 
 namespace Engine{
 
@@ -8,15 +9,19 @@ namespace Engine{
 
         HY_ENGINE_INFO("Engine initialization started.");
 
+        eventBus = CreateRef<EventBus>();
+        eventBus->setCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+
         //init timer
         HY_ENGINE_TRACE("Initialization of engine clock.");
         timer = CreateScope<Timer>();
 
         HY_ENGINE_TRACE("Initialization of main window.");
         window = CreateRef<Window>(SCR_WIDTH, SCR_HEIGHT, windowName);
+        window->SetEventBus(eventBus);
 
         HY_ENGINE_TRACE("Configuration of window.");
-        window->setUserPointer(&windowData);
+        window->setUserPointer(&appData);
         window->setCursorPosCallback(mouse_callback);
         window->setScrollCallback(scroll_callback);
         window->setMouseButtonCallback(onMouseButton);
@@ -62,6 +67,7 @@ namespace Engine{
 
             //update
             // -----
+            eventBus->DispatchAll();
             update();
 
             for (const auto& a : renderSystems) {
@@ -86,29 +92,76 @@ namespace Engine{
         }
     }
 
-    void Application::processInput() {
-        if (glfwGetKey(window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(window->getWindow(), true);
+    void Application::OnEvent(const Scope<Event>& e) {
+        if (e->getCategory() == EventCategoryKeyboard and e->getType() == EventType::KeyPressed){
+            auto event = dynamic_cast<KeyPressedEvent*>(e.get());
+            HandleKeyPressEvent(*event);
+        }
+    }
 
-        auto cameraSpeed = static_cast<float>(windowData.speed * timer->getFrameTime());
-        if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
-            windowData.cameraPos += (cameraSpeed * windowData.cameraFront);
-        if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
-            windowData.cameraPos -= (cameraSpeed * windowData.cameraFront);
-        if (glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
-            windowData.cameraPos -= glm::normalize(glm::cross(windowData.cameraFront, windowData.cameraUp)) * cameraSpeed;
-        if (glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
-            windowData.cameraPos += glm::normalize(glm::cross(windowData.cameraFront, windowData.cameraUp)) * cameraSpeed;
-        if (glfwGetKey(window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
-            windowData.cameraPos += glm::normalize(windowData.cameraUp) * cameraSpeed;
-        if (glfwGetKey(window->getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-            windowData.cameraPos -= glm::normalize(windowData.cameraUp) * cameraSpeed;
+    void Application::HandleKeyPressEvent(const KeyPressedEvent &e) {
+        auto cameraSpeed = static_cast<float>(appData.speed * timer->getFrameTime());
+        using namespace Key;
+        switch (e.GetKeyCode()) {
+            case Escape:
+                glfwSetWindowShouldClose(window->getWindow(), true);
+                break;
+            case W:
+                appData.cameraPos += (cameraSpeed * appData.cameraFront);
+                break;
+            case S:
+                appData.cameraPos -= (cameraSpeed * appData.cameraFront);
+                break;
+            case A:
+                appData.cameraPos -= glm::normalize(glm::cross(appData.cameraFront, appData.cameraUp)) * cameraSpeed;
+                break;
+            case D:
+                appData.cameraPos += glm::normalize(glm::cross(appData.cameraFront, appData.cameraUp)) * cameraSpeed;
+                break;
+            case Space:
+                appData.cameraPos += glm::normalize(appData.cameraUp) * cameraSpeed;
+                break;
+            case LeftShift:
+                appData.cameraPos -= glm::normalize(appData.cameraUp) * cameraSpeed;
+                break;
+            default:
+                HY_ENGINE_INFO("Unidentified key event: {0}");
+                break;
+        }
+    }
+
+    void Application::processInput() {
+        #define IF_PRESSED(window, key) glfwGetKey(window->getWindow(), key) == GLFW_PRESS
+        #define ADD_KEYPRESS_EVENT(eventBus, key) eventBus->AddEvent(CreateScope<KeyPressedEvent>(key))
+        using namespace Key;
+
+        if (IF_PRESSED(window, GLFW_KEY_ESCAPE)){
+            ADD_KEYPRESS_EVENT(eventBus, Escape);
+        }
+        if (IF_PRESSED(window, GLFW_KEY_W)){
+            ADD_KEYPRESS_EVENT(eventBus, W);
+        }
+        if (IF_PRESSED(window, GLFW_KEY_S)){
+            ADD_KEYPRESS_EVENT(eventBus, S);
+        }
+        if (IF_PRESSED(window, GLFW_KEY_A)){
+            ADD_KEYPRESS_EVENT(eventBus, A);
+        }
+        if (IF_PRESSED(window, GLFW_KEY_D)){
+            ADD_KEYPRESS_EVENT(eventBus, D);
+        }
+        if (IF_PRESSED(window, GLFW_KEY_SPACE)){
+            ADD_KEYPRESS_EVENT(eventBus, Space);
+        }
+        if (IF_PRESSED(window, GLFW_KEY_LEFT_SHIFT)){
+            ADD_KEYPRESS_EVENT(eventBus, LeftShift);
+        }
 
     }
 
     void Application::onMouseButton(GLFWwindow *window, int button, int action, int mods) {
 
-        auto* data = (WindowData*)glfwGetWindowUserPointer( window );
+        auto* data = (ApplicationData*)glfwGetWindowUserPointer(window );
 
         if( button == GLFW_MOUSE_BUTTON_RIGHT and (action == GLFW_PRESS or action == GLFW_REPEAT)) {
             data->rightButtonPressed = true;
@@ -120,7 +173,7 @@ namespace Engine{
 
     void Application::mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
 
-        auto* data = (WindowData*)glfwGetWindowUserPointer( window );
+        auto* data = (ApplicationData*)glfwGetWindowUserPointer(window );
 
         //TODO make real hold detection system
         if (data->rightButtonPressed){
@@ -168,7 +221,7 @@ namespace Engine{
 // ----------------------------------------------------------------------
     void Application::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 
-        auto* data = (WindowData*)glfwGetWindowUserPointer( window );
+        auto* data = (ApplicationData*)glfwGetWindowUserPointer(window );
 
         data->fov -= (float)yoffset;
         if (data->fov < 1.0f)

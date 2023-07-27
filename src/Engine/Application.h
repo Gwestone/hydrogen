@@ -5,17 +5,22 @@
 
 #include "Window.h"
 #include "Timer.h"
-#include "WindowData.h"
+#include "ApplicationData.h"
 #include "EngineConfig.h"
 #include "Log.h"
 #include "Systems/IRenderSystem.h"
 #include "Core/Base.h"
+#include "Event/Event.h"
+#include "Event/KeyEvent.h"
 
 namespace Engine{
     class Application {
     private:
         void virtual update() = 0;
         void virtual render() = 0;
+
+        virtual void OnEvent(const Scope<Event>& e);
+        virtual void HandleKeyPressEvent(const KeyPressedEvent& e);
 
         void processInput();
         static void onMouseButton(GLFWwindow* window, int button, int action, int mods);
@@ -31,7 +36,7 @@ namespace Engine{
     protected:
 
         // camera
-        WindowData windowData;
+        ApplicationData appData;
 
         // timer
         Scope<Timer> timer;
@@ -43,6 +48,7 @@ namespace Engine{
         const unsigned int SCR_WIDTH = 800;
         const unsigned int SCR_HEIGHT = 600;
         Ref<Window> window;
+        Ref<EventBus> eventBus;
         std::vector<Ref<RenderSystems::IRenderSystem>> renderSystems;
 
         void addRenderSystem(Ref<RenderSystems::IRenderSystem> renderSystem);
